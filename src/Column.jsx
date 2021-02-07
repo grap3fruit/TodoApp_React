@@ -86,6 +86,7 @@ const Column = ({ columnId, title }) => {
         isInputBoxOpened={isInputBoxOpened}
         columnId={columnId}
         addNewCardClickHandler={addNewCardClickHandler}
+        inputBoxDisplayHandler={inputBoxDisplayHandler}
       />
       <StyledCardList>
         {cards &&

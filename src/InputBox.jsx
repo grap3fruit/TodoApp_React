@@ -6,7 +6,12 @@ const StyledInputBox = styled.section`
   display: ${(props) => (props.isInputBoxOpened ? 'block' : 'none')};
 `;
 
-const InputBox = ({ isInputBoxOpened, columnId, addNewCardClickHandler }) => {
+const InputBox = ({
+  isInputBoxOpened,
+  columnId,
+  addNewCardClickHandler,
+  inputBoxDisplayHandler,
+}) => {
   const [textValue, setTextValue] = useState('');
 
   const textAreaChangeHandler = (e) => {
@@ -20,7 +25,9 @@ const InputBox = ({ isInputBoxOpened, columnId, addNewCardClickHandler }) => {
         <button type="button" onClick={() => addNewCardClickHandler(textValue)}>
           Add
         </button>
-        <button type="button">Cancel</button>
+        <button type="button" onClick={inputBoxDisplayHandler}>
+          Cancel
+        </button>
       </div>
     </StyledInputBox>
   );
@@ -30,6 +37,7 @@ InputBox.propTypes = {
   isInputBoxOpened: PropTypes.bool.isRequired,
   columnId: PropTypes.number.isRequired,
   addNewCardClickHandler: PropTypes.func.isRequired,
+  inputBoxDisplayHandler: PropTypes.func.isRequired,
 };
 
 export default InputBox;
