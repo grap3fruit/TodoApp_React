@@ -25,6 +25,5 @@ export const fetchData = async ({ url, method, data = {} }) => {
     return response.json();
   } catch (err) {
     console.error(err);
-    return false;
   }
 };

@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
-import { fetchData } from './utils/api';
 
 const StyledCard = styled.section`
   display: flex;
