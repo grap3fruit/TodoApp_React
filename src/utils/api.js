@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import { BASE_URL } from './constants';
 
-export const fetchData = async ({ url, method, data = {}, setState }) => {
+export const fetchData = async ({ url, method, data = {} }) => {
   // const results = await fetch(`${BASE_URL}${url}`).then((response) => response.json());
   const options = {
     method, // *GET, POST, PUT, DELETE, etc.
@@ -20,11 +20,5 @@ export const fetchData = async ({ url, method, data = {}, setState }) => {
     options.body = JSON.stringify(data);
   }
 
-  const results = await fetch(`${BASE_URL}${url}`, options).then((response) => response.json()); // parses JSON response into native JavaScript objects
-
-  if (method === 'GET') {
-    setState(results);
-  }
-
-  return results;
+  return await fetch(`${BASE_URL}${url}`, options).then((response) => response.json()); // parses JSON response into native JavaScript objects
 };

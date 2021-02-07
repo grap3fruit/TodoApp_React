@@ -36,9 +36,13 @@ const Column = ({ columnId, title }) => {
   const [cards, setCards] = useState();
   const [isInputBoxOpened, setIsInputBoxOpened] = useState(false);
 
+  const getCards = async () => {
+    setCards(await fetchData({ url: `/columns/${columnId}/cards`, method: 'GET' }));
+  };
+
   useEffect(() => {
-    fetchData({ url: `/columns/${columnId}/cards`, method: 'GET', setState: setCards });
-  }, [columnId]);
+    getCards();
+  }, []);
 
   const inputBoxDisplayHandler = () => {
     if (isInputBoxOpened) {
@@ -46,6 +50,16 @@ const Column = ({ columnId, title }) => {
       return;
     }
     setIsInputBoxOpened(true);
+  };
+
+  const deleteBtnClickHandler = async (cardId) => {
+    const isDeleted = await fetchData({ url: `/card/${cardId}`, method: 'DELETE' });
+    if (isDeleted) {
+      console.log('is Deleted');
+      console.log(cards);
+      return;
+    }
+    return error;
   };
 
   return (
@@ -64,7 +78,15 @@ const Column = ({ columnId, title }) => {
       </StyledColumnHeader>
       <InputBox isInputBoxOpened={isInputBoxOpened} columnId={columnId} />
       <StyledCardList>
-        {cards && cards.map((card) => <Card key={card.id} id={card.id} content={card.memo} />)}
+        {cards &&
+          cards.map((card) => (
+            <Card
+              key={card.id}
+              id={card.id}
+              content={card.memo}
+              deleteBtnClickHandler={deleteBtnClickHandler}
+            />
+          ))}
       </StyledCardList>
     </StyledColumn>
   );

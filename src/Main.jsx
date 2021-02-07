@@ -10,8 +10,12 @@ const StyledMain = styled.main`
 const Main = () => {
   const [columns, setColumn] = useState();
 
+  const getColumns = async () => {
+    setColumn(await fetchData({ url: '/columns', method: 'GET' }));
+  };
+
   useEffect(() => {
-    fetchData({ url: '/columns', method: 'GET', setState: setColumn });
+    getColumns();
   }, []);
 
   return (
