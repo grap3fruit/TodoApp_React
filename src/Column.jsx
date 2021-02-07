@@ -53,13 +53,19 @@ const Column = ({ columnId, title }) => {
   };
 
   const deleteBtnClickHandler = async (cardId) => {
-    const isDeleted = await fetchData({ url: `/card/${cardId}`, method: 'DELETE' });
-    if (isDeleted) {
-      console.log('is Deleted');
-      console.log(cards);
-      return;
-    }
-    return error;
+    await fetchData({ url: `/card/${cardId}`, method: 'DELETE' });
+    setCards(cards.filter((card) => card.id !== cardId));
+  };
+
+  const addNewCardClickHandler = async (textValue) => {
+    const data = {
+      columnId,
+      memo: textValue,
+      previousCardId: -1,
+      userName: 'soonwon',
+    };
+    const result = await fetchData({ url: '/card', method: 'POST', data });
+    setCards([...cards, { ...data, id: result.insertId }]);
   };
 
   return (
@@ -76,7 +82,11 @@ const Column = ({ columnId, title }) => {
           <button type="button">X</button>
         </StyledColumnHeaderAction>
       </StyledColumnHeader>
-      <InputBox isInputBoxOpened={isInputBoxOpened} columnId={columnId} />
+      <InputBox
+        isInputBoxOpened={isInputBoxOpened}
+        columnId={columnId}
+        addNewCardClickHandler={addNewCardClickHandler}
+      />
       <StyledCardList>
         {cards &&
           cards.map((card) => (
