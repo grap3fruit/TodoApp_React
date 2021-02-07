@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from '@emotion/styled';
 import PropTypes from 'prop-types';
 import { fetchData } from './utils/api';
@@ -11,17 +11,17 @@ const StyledCard = styled.section`
   }
 `;
 
-const Card = ({ id, content }) => {
-  const deleteBtnClickHandler = () => {
-    fetchData({ url: `/card/${id}`, method: 'DELETE' });
+const Card = ({ id, content, deleteBtnClickHandler }) => {
+  const cardEl = useRef(null);
+
+  const cardEditClickHandler = () => {
+    console.log('hi', /\d+/.exec(cardEl.current.id)[0], Number(/\d+/.exec(cardEl.current.id)[0]));
   };
 
-  const cardEditClickHandler = () => {};
-
   return (
-    <StyledCard onClick={cardEditClickHandler}>
+    <StyledCard id={`card${id}`} ref={cardEl} onClick={cardEditClickHandler}>
       <p>{content}</p>
-      <button type="button" onClick={deleteBtnClickHandler}>
+      <button type="button" onClick={() => deleteBtnClickHandler(id)}>
         X
       </button>
     </StyledCard>
@@ -31,6 +31,7 @@ const Card = ({ id, content }) => {
 Card.propTypes = {
   id: PropTypes.number.isRequired,
   content: PropTypes.string.isRequired,
+  deleteBtnClickHandler: PropTypes.func.isRequired,
 };
 
 export default Card;
