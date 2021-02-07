@@ -20,5 +20,11 @@ export const fetchData = async ({ url, method, data = {} }) => {
     options.body = JSON.stringify(data);
   }
 
-  return await fetch(`${BASE_URL}${url}`, options).then((response) => response.json()); // parses JSON response into native JavaScript objects
+  try {
+    const response = await fetch(`${BASE_URL}${url}`, options);
+    return response.json();
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 };
