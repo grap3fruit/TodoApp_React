@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-
 export const BASE_URL = 'http://localhost:3000/api';
 
 export const GET_CARDS = 'GET_CARDS';
