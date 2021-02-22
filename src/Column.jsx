@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import Card from './Card';
 import InputBox from './InputBox';
 import { fetchData } from './utils/api';
+import { GET_CARDS, ADD_CARD } from './utils/constants';
+import { useCardsState, useCardsDispatch } from './contexts/CardsContext';
 
 const StyledColumn = styled.section`
   margin-right: 2rem;
@@ -32,17 +34,29 @@ const StyledCardList = styled.div`
   background-color: #f3eaea;
 `;
 
-const Column = ({ columnId, title }) => {
-  const [cards, setCards] = useState();
-  const [isInputBoxOpened, setIsInputBoxOpened] = useState(false);
+const StyledModal = styled.div`
+  background-color: #d6fcfd;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.5;
+`;
 
-  const getCards = async () => {
-    setCards(await fetchData({ url: `/columns/${columnId}/cards`, method: 'GET' }));
-  };
+const Column = ({ columnId, title }) => {
+  const { cards } = useCardsState();
+  const dispatch = useCardsDispatch();
+
+  const [isInputBoxOpened, setIsInputBoxOpened] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    getCards();
-  }, []);
+    (async () => {
+      const results = await fetchData({ url: `/columns/${columnId}/cards`, method: 'GET' });
+      dispatch({ type: GET_CARDS, payload: results });
+    })();
+  }, [columnId, dispatch]);
 
   const inputBoxDisplayHandler = () => {
     if (isInputBoxOpened) {
@@ -53,8 +67,8 @@ const Column = ({ columnId, title }) => {
   };
 
   const deleteBtnClickHandler = async (cardId) => {
-    await fetchData({ url: `/card/${cardId}`, method: 'DELETE' });
-    setCards(cards.filter((card) => card.id !== cardId));
+    // await fetchData({ url: `/card/${cardId}`, method: 'DELETE' });
+    // setCards(cards.filter((card) => card.id !== cardId));
   };
 
   const addNewCardClickHandler = async (textValue) => {
@@ -64,8 +78,13 @@ const Column = ({ columnId, title }) => {
       previousCardId: -1,
       userName: 'soonwon',
     };
-    const result = await fetchData({ url: '/card', method: 'POST', data });
-    setCards([...cards, { ...data, id: result.insertId }]);
+
+    dispatch({ type: ADD_CARD, payload: { id: 999, ...data } });
+  };
+
+  const cardEditClickHandler = (cardEl) => {
+    // console.log('hi', /\d+/.exec(cardEl.current.id)[0], Number(/\d+/.exec(cardEl.current.id)[0]));
+    // isEditing ? setIsEditing(false) : setIsEditing(true);
   };
 
   return (
@@ -90,14 +109,17 @@ const Column = ({ columnId, title }) => {
       />
       <StyledCardList>
         {cards &&
-          cards.map((card) => (
-            <Card
-              key={card.id}
-              id={card.id}
-              content={card.memo}
-              deleteBtnClickHandler={deleteBtnClickHandler}
-            />
-          ))}
+          cards
+            .filter((card) => card.columnId === columnId)
+            .map((card) => (
+              <Card
+                key={card.id}
+                id={card.id}
+                content={card.memo}
+                deleteBtnClickHandler={deleteBtnClickHandler}
+                cardEditClickHandler={cardEditClickHandler}
+              />
+            ))}
       </StyledCardList>
     </StyledColumn>
   );
